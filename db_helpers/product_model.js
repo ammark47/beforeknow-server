@@ -11,7 +11,7 @@ insertNewProduct = async (productData) => {
 
 getReviewedProducts = async (searchKey) => {
     return db.task('getReviewedProduct', async t => {
-        const reviewedProducts = await t.manyOrNone('SELECT * FROM product WHERE product_name LIKE $1', ['%' + searchKey + '%'])
+        const reviewedProducts = await t.manyOrNone('SELECT * FROM product WHERE product_name ILIKE $1', ['%' + searchKey + '%'])
         return reviewedProducts
     })
 }
