@@ -35,16 +35,39 @@ app.post('/users', async (req, res) => {
   const chatUsername = email.replace(/([^a-z0-9_-]+)/gi, "_")
   const token = serverStreamChat.createToken(chatUsername)
 
-  await serverStreamChat.setUser({
-    id: chatUsername,
-    name: name
-  })
-
-  serverStreamChat.disconnect()
 
   // create user in postgres
   userModel.getInsertUser({...req.body, token, chatUsername})
-  .then(response => {
+  .then(async response => {
+      // if new user, create one direct channel with me 
+      const { userAlreadyExists } = response
+      console.log("user exists", userAlreadyExists)
+      if (!userAlreadyExists) {
+        await serverStreamChat.setUser({
+          id: chatUsername,
+          name: name
+        },
+        token
+        )
+
+        // create direct chat with Ammar
+        const channel = await serverStreamChat.channel(
+          'messaging', 
+          { 
+              members: [ chatUsername, 'ammark1111_gmail_com' ],
+              status: 'ACTIVE',
+              customer: chatUsername,
+              reviewer: chatUsername,
+              direct: 'ammark1111_gmail_com',
+              cancellable: false,
+              name: `Your direct chat with Before Know`
+          }
+        )
+        console.log("created channel", channel)
+        await channel.create()
+        await serverStreamChat.disconnect()
+      }
+
       res.status(200).json(response)
   })
   .catch(error => {
@@ -110,7 +133,7 @@ app.get('/chat/status/:reviewerId/:customerId/:reviewId', (req, res) => {
 
 app.patch('/chat/accept/:reviewerId/:customerId/:reviewId', (req, res) => {
   const { customerId, reviewerId, reviewId } = req.params
-  const { chat_username, chat_token, name, customerName } = req.body
+  const { chat_username, chat_token, name, customerName, productName } = req.body
 
   chatModel.setChatStatusActive(reviewerId, customerId, reviewId)
   .then(() => {
@@ -134,6 +157,7 @@ app.patch('/chat/accept/:reviewerId/:customerId/:reviewId', (req, res) => {
           customer: customerChatname,
           reviewer: chat_username,
           reviewId: reviewId,
+          productName: productName,
           name: `${name}-${customerName}-${reviewId}`
       }
     )
