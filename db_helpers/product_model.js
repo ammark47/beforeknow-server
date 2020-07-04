@@ -25,6 +25,3 @@ module.exports = {
     getReviewedProducts,
     getProductInfo
 }
-
-
-// remove case sensitivity from product search

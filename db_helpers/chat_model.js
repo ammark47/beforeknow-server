@@ -16,6 +16,13 @@ const insertNewChatRequestAndDecrementCurrency = async (chatInfo) => {
     })
 }
 
+const archiveChatAndGrantReviewerToken = async ({ chatId }) => {
+    return db.tx('archiveRequestAndIncrement', async t => {
+        await t.none('UPDATE chat SET status = $1 WHERE id = $2', ["ARCHIVED", chatId] )
+        await t.none('UPDATE users SET chat_currency = chat_currency + 1 FROM chat WHERE users.id = chat.reviewer_id AND chat.id = $1', [chatId])
+    })
+}
+ 
 const getAllPendingChatRequestsForUser = async (userId) => {
     return await db.manyOrNone(' \
         SELECT users.name, users.id as customer_id, review.id as review_id, review.product_id, product.product_name, product.small_image \
@@ -36,11 +43,18 @@ const getChatStatus = async (reviewerId, customerId, reviewId) => {
 }
 
 const setChatStatusActive = async (reviewerId, customerId, reviewId) => {
-    return db.none('UPDATE chat SET status = $1 WHERE reviewer_id = $2 AND customer_id = $3 AND review_id = $4', ['ACTIVE', reviewerId, customerId, reviewId])
+    return db.one('UPDATE chat SET status = $1 WHERE reviewer_id = $2 AND customer_id = $3 AND review_id = $4 AND status = $5 RETURNING id', ['ACTIVE', reviewerId, customerId, reviewId, 'PENDING'])
 }
 
 const setChatStatusDeclined = async (reviewerId, customerId, reviewId) => {
     return db.none('UPDATE chat SET status = $1 WHERE reviewer_id = $2 AND customer_id = $3 AND review_id = $4', ['DECLINED', reviewerId, customerId, reviewId])
+}
+
+const setChatStatusDeclinedAndReturnCustomerToken = async (reviewerId, customerId, reviewId) => {
+    return db.tx('declineRequestAndGiveBackToken', async t => {
+        await t.none('UPDATE chat SET status = $1 WHERE reviewer_id = $2 AND customer_id = $3 AND review_id = $4 AND status = $5', ['DECLINED', reviewerId, customerId, reviewId, 'PENDING'])
+        await t.none('UPDATE users SET chat_currency = chat_currency + 1 FROM chat WHERE users.id = chat.customer_id AND chat.review_id = $1 AND chat.customer_id = $2 AND chat.reviewer_id = $3', [reviewId, customerId, reviewerId])
+    })
 }
 
 module.exports = {
@@ -50,5 +64,6 @@ module.exports = {
     getChatStatus,
     setChatStatusActive,
     insertNewChatRequestAndDecrementCurrency,
-    setChatStatusDeclined
+    setChatStatusDeclinedAndReturnCustomerToken,
+    archiveChatAndGrantReviewerToken
 }

@@ -31,5 +31,3 @@ module.exports = {
     getReviewersFromProductId
 }
 
-
-// TODO: return false or error when review already exists for user

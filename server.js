@@ -12,6 +12,7 @@ const userModel = require('./db_helpers/user_model')
 const productModel = require('./db_helpers/product_model')
 const reviewModel = require('./db_helpers/review_model')
 const chatModel = require('./db_helpers/chat_model')
+const { response } = require('express')
 
 app.use((req,res,next) => {console.log(req.path); next() })
 
@@ -136,10 +137,12 @@ app.patch('/chat/accept/:reviewerId/:customerId/:reviewId', (req, res) => {
   const { chat_username, chat_token, name, customerName, productName } = req.body
 
   chatModel.setChatStatusActive(reviewerId, customerId, reviewId)
-  .then(() => {
-    return userModel.getChatUsername(customerId)    
+  .then(async ({ id: chatId }) => {
+    console.log('chatid', chatId)
+    const chat_username = await userModel.getChatUsername(customerId)
+    return {...chat_username, chatId}   
   })
-  .then(async ({ chat_username: customerChatname }) => {
+  .then(async ({ chat_username: customerChatname, chatId }) => {
     // create getStream conversation
     await serverStreamChat.setUser({
       id: chat_username,
@@ -158,6 +161,7 @@ app.patch('/chat/accept/:reviewerId/:customerId/:reviewId', (req, res) => {
           reviewer: chat_username,
           reviewId: reviewId,
           productName: productName,
+          chatId: chatId,
           name: `${name}-${customerName}-${reviewId}`
       }
     )
@@ -175,7 +179,7 @@ app.patch('/chat/accept/:reviewerId/:customerId/:reviewId', (req, res) => {
 
 app.patch('/chat/decline/:reviewerId/:customerId/:reviewId', (req, res) => {
   const { customerId, reviewerId, reviewId } = req.params
-  chatModel.setChatStatusDeclined(reviewerId, customerId, reviewId)
+  chatModel.setChatStatusDeclinedAndReturnCustomerToken(reviewerId, customerId, reviewId)
   .then(response => {
     console.log(response)
     res.status(200).send(response)
@@ -188,6 +192,18 @@ app.patch('/chat/decline/:reviewerId/:customerId/:reviewId', (req, res) => {
 
 app.post('/chat', (req, res) => {
   chatModel.insertNewChatRequestAndDecrementCurrency(req.body)
+  .then(response => {
+    console.log(response)
+    res.status(200).send(response)
+  })
+  .catch(error => {
+    console.error('error', error)
+    res.status(500).send(error)
+  })
+})
+
+app.patch('/chat/archive', (req, res) => {
+  chatModel.archiveChatAndGrantReviewerToken(req.body)
   .then(response => {
     console.log(response)
     res.status(200).send(response)
