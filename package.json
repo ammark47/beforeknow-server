@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "staging": "cross-env NODE_ENV=staging nodemon server.js"
+    "staging": "cross-env NODE_ENV=staging nodemon server.js",
+    "prod_db": "cross-env NODE_ENV=prod node ./db_helpers/initialize_db.js"
   },
   "author": "",
   "license": "ISC",
