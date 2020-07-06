@@ -28,7 +28,7 @@ app.use(function (req, res, next) {
 const serverStreamChat = new StreamChat(
   STREAM_API_KEY,
   STREAM_APP_SECRET
-);
+)
 
 app.post('/users', async (req, res) => {  
   const { email, name } = req.body.profile
