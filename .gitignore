@@ -1,3 +1,7 @@
 .env
 node_modules
 .aws
+**/node_modules
+
+# Ignore any zip files
+*.zip

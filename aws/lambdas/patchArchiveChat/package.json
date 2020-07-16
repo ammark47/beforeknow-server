@@ -1,0 +1,15 @@
+{
+  "name": "patcharchivechat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "upload": "aws lambda update-function-code --function-name patchArchiveChat --zip-file fileb://patchArchiveChat.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg-promise": "10.5.8"
+  }
+}

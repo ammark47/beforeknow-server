@@ -1,5 +1,5 @@
-const nodeRSA = require('node-rsa');
-const fetch = require('node-fetch');
+const nodeRSA = require('node-rsa')
+const fetch = require('node-fetch')
 
 const publicKey = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbM2br48JS2JJy8Ajy0gy33Gu5RNAFgysUp4Mj9FqzXWg7AwdGaXc0vIAGG3vmyrP906qJpiEV1aW9GhsEGNQ9Mjmngfnu1VAKZjskVToqG1ktiXZJKSlVUfGTYj+r1lKDgd2iKt4azIzoeElk1gnLovn8zEaiCT7prHlzWWb7JgW3qp1e12e5WvSC5xX9P5iKOs6WM3qTSAX3e8qGeA9wtlHdQuDjSjWA0WlYQIFKgpoCBNZeldNxel79QgR7QKG6Oo/H4aImhDW9vXH00mGVy9QX11ngovVYPhCQWzsAo+v+Y2lAJUtFdjr2t9/mJisKxpYvpMeqVo2ZSydwBmb5'
 const consumerId = 'a4c258a6-8449-443f-ad9a-47f9933f6021'

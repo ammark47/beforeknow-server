@@ -1,6 +1,6 @@
 const db = require('./index')
 
-insertNewProduct = async (productData) => {
+const insertNewProduct = async (productData) => {
     productData.storeName = "walmart"
 
     return db.task('getInsertProduct', async t => {
@@ -9,14 +9,14 @@ insertNewProduct = async (productData) => {
     })
 }
 
-getReviewedProducts = async (searchKey) => {
+const getReviewedProducts = async (searchKey) => {
     return db.task('getReviewedProduct', async t => {
         const reviewedProducts = await t.manyOrNone('SELECT * FROM product WHERE product_name ILIKE $1', ['%' + searchKey + '%'])
         return reviewedProducts
     })
 }
 
-getProductInfo = async (productId) => {
+const getProductInfo = async (productId) => {
     return db.oneOrNone('SELECT * FROM product WHERE id = $1', [productId])
 }
 

@@ -1,0 +1,16 @@
+{
+  "name": "patchacceptchat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "upload": "aws lambda update-function-code --function-name patchAcceptChat --zip-file fileb://patchAcceptChat.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg-promise": "10.5.8",
+    "stream-chat": "1.13.0"
+  }
+}

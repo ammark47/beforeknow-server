@@ -106,9 +106,9 @@ app.get('/users/:userId/chat-name', (req, res) => {
   })
 })
 
-app.get('/chat/:customerId/:userId/:reviewId', (req, res) => {
-  const { customerId, userId, reviewId } = req.params
-  chatModel.checkIfPendingOrActiveChatExists(customerId, userId, reviewId)
+app.get('/chat/:reviewerId/:customerId/:reviewId/pending-active', (req, res) => {
+  const { customerId, reviewerId, reviewId } = req.params
+  chatModel.checkIfPendingOrActiveChatExists(customerId, reviewerId, reviewId)
   .then(response => {
     console.log(response)
     res.status(200).send(response)
@@ -119,7 +119,7 @@ app.get('/chat/:customerId/:userId/:reviewId', (req, res) => {
   })
 })
 
-app.get('/chat/status/:reviewerId/:customerId/:reviewId', (req, res) => {
+app.get('/chat/:reviewerId/:customerId/:reviewId/status', (req, res) => {
   const { customerId, reviewerId, reviewId } = req.params
   chatModel.getChatStatus(reviewerId, customerId, reviewId)
   .then(response => {
@@ -132,7 +132,7 @@ app.get('/chat/status/:reviewerId/:customerId/:reviewId', (req, res) => {
   })
 })
 
-app.patch('/chat/accept/:reviewerId/:customerId/:reviewId', (req, res) => {
+app.patch('/chat/:reviewerId/:customerId/:reviewId/accept', (req, res) => {
   const { customerId, reviewerId, reviewId } = req.params
   const { chat_username, chat_token, name, customerName, productName } = req.body
 
@@ -177,7 +177,7 @@ app.patch('/chat/accept/:reviewerId/:customerId/:reviewId', (req, res) => {
   })
 })
 
-app.patch('/chat/decline/:reviewerId/:customerId/:reviewId', (req, res) => {
+app.patch('/chat/:reviewerId/:customerId/:reviewId/decline', (req, res) => {
   const { customerId, reviewerId, reviewId } = req.params
   chatModel.setChatStatusDeclinedAndReturnCustomerToken(reviewerId, customerId, reviewId)
   .then(response => {
@@ -214,9 +214,9 @@ app.patch('/chat/archive', (req, res) => {
   })
 })
 
-app.get('/chat/:userId', (req, res) => {
-  const { userId } = req.params
-  chatModel.getAllPendingChatRequestsForUser(userId)
+app.get('/chat/:reviewerId', (req, res) => {
+  const { reviewerId } = req.params
+  chatModel.getAllPendingChatRequestsForUser(reviewerId)
   .then(response => {
     console.log(response)
     res.status(200).send(response)
@@ -267,7 +267,7 @@ app.get('/reviews/:productId', (req, res) => {
     })
 })
 
-app.post('/reviews/create', (req, res, next) => {
+app.post('/reviews', (req, res, next) => {
   reviewModel.insertNewReview(req.body)
   .then(response => {
     res.status(200).send(response)

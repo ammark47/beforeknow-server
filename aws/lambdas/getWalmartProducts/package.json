@@ -1,0 +1,16 @@
+{
+  "name": "getwalmartproducts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "upload": "aws lambda update-function-code --function-name getWalmartProducts --zip-file fileb://getWalmartProducts.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "2.6.0",
+    "node-rsa": "1.0.8"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "postcreatereview",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "upload": "aws lambda update-function-code --function-name postCreateReview --zip-file fileb://postCreateReview.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg-monitor": "1.4.1",
+    "pg-promise": "10.5.8"
+  }
+}
