@@ -16,7 +16,7 @@
     "node-fetch": "2.6.0",
     "node-rsa": "1.0.8",
     "pg-promise": "10.5.2",
-    "stream-chat": "1.12.1"
+    "stream-chat": "8.2.1"
   },
   "devDependencies": {
     "cross-env": "7.0.2",
